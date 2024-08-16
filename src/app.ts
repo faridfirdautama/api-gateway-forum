@@ -4,10 +4,9 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 
 const app = express();
 dotenv.config();
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
+// when user hit http://localhost:3000/github ,
+// app will forward to http://www.github.com/faridfirdautama
 app.use(
   "/api/v1/users",
   createProxyMiddleware({ target: "http://localhost:3001" }),
