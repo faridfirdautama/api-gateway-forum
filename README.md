@@ -5,8 +5,8 @@ Endpoints:
 ```
 103.52.114.161:3000/api/v1/...
 ```
-- followed by users | threads | replies
 
+- followed by users | threads | replies
 
 Target:
 
@@ -21,4 +21,8 @@ Target:
 3. Replies service:
    ```
    <TBA>:3003/api/v1/replies
+   ```
+4. Notifications service:
+   ```
+   <TBA>:3004/api/v1/notifications
    ```
