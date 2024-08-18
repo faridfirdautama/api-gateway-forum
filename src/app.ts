@@ -29,6 +29,14 @@ app.use(
   }),
 );
 
+app.use(
+  "/api/v1/notifications",
+  createProxyMiddleware({
+    target: "http://replies-service:3004/api/v1/notifications",
+    logger: console,
+  }),
+);
+
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
