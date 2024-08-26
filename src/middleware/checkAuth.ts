@@ -1,64 +1,86 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { IUserPayload } from "../entities/user.payload";
+
+interface IUserPayload {
+  id: string;
+  name: string;
+  email: string;
+}
 
 async function checkAuth(req: Request, res: Response, next: NextFunction) {
-  const token = req.headers.cookie?.split(/[=;]+/);
+  const tokens = req.headers.cookie?.split(/[=;\s]+/);
+  if (req.method === "POST") {
+    if (tokens === undefined) {
+      console.log("NO COOKIES");
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const accessToken = tokens[tokens.indexOf("accessToken") + 1];
+    const refreshToken = tokens[tokens.indexOf("refreshToken") + 1];
+    console.log(`AT: ${accessToken}, RT: ${refreshToken}`);
 
-  // Check Token's presence
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  const accessToken = token[1];
-  const refreshToken = token[3];
+    // Check Token's presence
+    if (accessToken) {
+      try {
+        // Verify accessToken
+        const decoded = jwt.verify(
+          accessToken,
+          process.env.JWT_ACCESS_KEY as string,
+        ) as IUserPayload;
+        next();
+        return decoded;
+      } catch (error) {
+        // REFRESH_TOKEN
+        if (refreshToken) {
+          try {
+            // Check RT on userService DB
+            const decoded = jwt.verify(
+              refreshToken,
+              process.env.JWT_REFRESH_KEY as string,
+            ) as IUserPayload;
 
-  try {
-    // Verify accessToken
-    const decoded = jwt.verify(
-      accessToken,
-      process.env.JWT_ACCESS_KEY as string,
-    ) as IUserPayload;
+            // generate new AT and RT
+            const payload = {
+              id: decoded.id,
+              name: decoded.name,
+              email: decoded.email,
+            };
+            const newAccessToken = jwt.sign(
+              payload,
+              process.env.JWT_ACCESS_KEY as string,
+            );
+            const newRefreshToken = jwt.sign(
+              payload,
+              process.env.JWT_REFRESH_KEY as string,
+            );
 
-    // Check RT on userService DB
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY as string);
-
-    // generate new AT and RT
-    const payload = {
-      id: decoded.id,
-      name: decoded.name,
-      email: decoded.email,
-    };
-    const newAccessToken = jwt.sign(
-      payload,
-      process.env.JWT_ACCESS_KEY as string,
-      { expiresIn: "15m" },
-    );
-    const newRefreshToken = jwt.sign(
-      payload,
-      process.env.JWT_REFRESH_KEY as string,
-      { expiresIn: "7d" },
-    );
-
-    // next
+            // set cookie & save to userService DB
+            res
+              .cookie("accessToken", newAccessToken, { httpOnly: true })
+              .cookie("refreshToken", newRefreshToken, { httpOnly: true });
+            next();
+          } catch (error) {
+            if (error instanceof jwt.JsonWebTokenError) {
+              console.error(error);
+              return res
+                .status(401)
+                .json({ message: "Unauthorized. Invalid token", error });
+            }
+            if (error instanceof jwt.TokenExpiredError) {
+              return res
+                .status(401)
+                .json({ message: "Unauthorized. Token expired" });
+            }
+            return res.status(500).json({ message: "Internal server error" });
+          }
+        }
+        console.log("Regenerating new set of tokens...");
+        console.log(error);
+        return res
+          .status(404)
+          .json({ message: "Re-send request please, data is being loaded..." });
+      }
+    }
     next();
-
-    // set cookie & save to userService DB
-    return res
-      .cookie("accessToken", newAccessToken, { httpOnly: true })
-      .cookie("refreshToken", newRefreshToken, { httpOnly: true });
-  } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      console.error(error);
-      return res
-        .status(401)
-        .json({ message: "Unauthorized. Invalid token", error });
-    }
-    if (error instanceof jwt.TokenExpiredError) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized. Token expired", error });
-    }
-    return res.status(500).json({ message: "Internal server error", error });
   }
 }
 
