@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { env } from "../utils/env";
 
 interface IUserPayload {
   id: string;
@@ -9,14 +10,13 @@ interface IUserPayload {
 
 async function checkAuth(req: Request, res: Response, next: NextFunction) {
   const tokens = req.headers.cookie?.split(/[=;\s]+/);
+
   if (req.method === "POST") {
     if (tokens === undefined) {
-      console.log("NO COOKIES");
       return res.status(401).json({ message: "Unauthorized" });
     }
     const accessToken = tokens[tokens.indexOf("accessToken") + 1];
     const refreshToken = tokens[tokens.indexOf("refreshToken") + 1];
-    console.log(`AT: ${accessToken}, RT: ${refreshToken}`);
 
     // Check Token's presence
     if (accessToken) {
@@ -24,7 +24,7 @@ async function checkAuth(req: Request, res: Response, next: NextFunction) {
         // Verify accessToken
         const decoded = jwt.verify(
           accessToken,
-          process.env.JWT_ACCESS_KEY as string,
+          env.JWT_ACCESS_KEY as string,
         ) as IUserPayload;
         next();
         return decoded;
@@ -35,7 +35,7 @@ async function checkAuth(req: Request, res: Response, next: NextFunction) {
             // Check RT on userService DB
             const decoded = jwt.verify(
               refreshToken,
-              process.env.JWT_REFRESH_KEY as string,
+              env.JWT_REFRESH_KEY as string,
             ) as IUserPayload;
 
             // generate new AT and RT
@@ -46,11 +46,11 @@ async function checkAuth(req: Request, res: Response, next: NextFunction) {
             };
             const newAccessToken = jwt.sign(
               payload,
-              process.env.JWT_ACCESS_KEY as string,
+              env.JWT_ACCESS_KEY as string,
             );
             const newRefreshToken = jwt.sign(
               payload,
-              process.env.JWT_REFRESH_KEY as string,
+              env.JWT_REFRESH_KEY as string,
             );
 
             // set cookie & save to userService DB
