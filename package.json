@@ -5,18 +5,29 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/app.js",
-    "dev": "nodemon src/app.ts"
+    "dev": "nodemon src/app.ts",
+    "lint:run": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "envalid": "^8.0.0",
     "express": "^4.19.2",
-    "http-proxy-middleware": "^3.0.0"
+    "http-proxy-middleware": "^3.0.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.1",
     "@types/express": "^4.17.21",
-    "nodemon": "^3.1.4"
+    "@types/jsonwebtoken": "^9.0.6",
+    "eslint": "^9.9.1",
+    "globals": "^15.9.0",
+    "husky": "^9.1.5",
+    "nodemon": "^3.1.4",
+    "typescript-eslint": "^8.2.0"
   }
 }
