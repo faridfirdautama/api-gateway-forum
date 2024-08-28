@@ -5,7 +5,7 @@ import { env } from "./utils/env";
 import cors from "cors";
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173/" }));
+app.use(cors());
 
 app.use(
   "/api/v1/users",
