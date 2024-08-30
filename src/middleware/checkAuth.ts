@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../utils/env";
-
-interface IUserPayload {
-  id: string;
-  name: string;
-  email: string;
-}
+import { IUserPayload } from "../entities/user.payload";
 
 async function checkAuth(req: Request, res: Response, next: NextFunction) {
   const tokens = req.headers.cookie?.split(/[=;\s]+/);
@@ -80,8 +75,8 @@ async function checkAuth(req: Request, res: Response, next: NextFunction) {
           .json({ message: "Re-send request please, data is being loaded..." });
       }
     }
-    next();
   }
+  next();
 }
 
 export default checkAuth;
