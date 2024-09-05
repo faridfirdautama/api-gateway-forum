@@ -8,6 +8,14 @@ const app = express();
 app.use(cors());
 
 app.use(
+  "/api/v1/users/auth",
+  createProxyMiddleware({
+    target: `http://${env.HOST_USERS_SERVICE}:3001/api/v1/users/auth`,
+    logger: console,
+  }),
+);
+
+app.use(
   "/api/v1/users",
   createProxyMiddleware({
     target: `http://${env.HOST_USERS_SERVICE}:3001/api/v1/users`,
