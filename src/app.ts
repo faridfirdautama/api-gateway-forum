@@ -27,7 +27,7 @@ app.use(
   "/api/v1/threads",
   checkAuth,
   createProxyMiddleware({
-    target: `http://${env.HOST_THREADS_SERVICE}:3002/api/v1/threads`,
+    target: `http://${env.HOST_THREADS_SERVICE}:8003/api/v1/threads`,
     logger: console,
   }),
 );
@@ -44,7 +44,7 @@ app.use(
 app.use(
   "/api/v1/notifications",
   createProxyMiddleware({
-    target: `"http://${env.HOST_NOTIFICATIONS_SERVICE}:3004/api/v1/notifications"`,
+    target: `"http://${env.HOST_NOTIFICATIONS_SERVICE}:8003/api/v1/notifications"`,
     logger: console,
   }),
 );

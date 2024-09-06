@@ -16,7 +16,7 @@ Target:
    ```
 2. Threads service:
    ```
-   <TBA>:3002/api/v1/threads
+   <TBA>:8003/api/v1/threads
    ```
 3. Replies service:
    ```
@@ -24,5 +24,5 @@ Target:
    ```
 4. Notifications service:
    ```
-   <TBA>:3004/api/v1/notifications
+   <TBA>:8003/api/v1/notifications
    ```
