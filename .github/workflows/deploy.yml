@@ -41,3 +41,12 @@ jobs:
 
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
+
+      - name: Deploy to Server
+        run: |
+          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.API_GATEWAY_IP }}"
+          docker pull ${secrets.DOCKERHUB_USERNAME}/forum-app-api-gateway
+          docker stop forum-app-api-gateway
+          docker rm forum-app-api-gateway
+          cd app/api-gateway-forum/ && docker-compose up -d
+          "
