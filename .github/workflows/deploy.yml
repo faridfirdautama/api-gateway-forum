@@ -31,3 +31,13 @@ jobs:
 
       - name: Push Docker Image to Hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/forum-app-api-gateway
+
+      - name: Setup SSH to Server
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.API_GATEWAY_IP }} >> ~/.ssh/known_hosts
+
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
