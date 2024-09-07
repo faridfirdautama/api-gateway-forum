@@ -1,0 +1,33 @@
+name: CI/CD Pipeline Backend Api-gateway ForumApp
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Logging
+        run: echo "Start CI/CD Pipeline Backend Api-gateway ForumApp"
+
+      - name: Checkout Main branch
+        uses: actions/checkout@v3
+
+      - name: Setup Nodejs
+        run: |
+          npm install -g pnpm@latest
+          pnpm install
+
+      - name: Check code linting
+        run: pnpm lint
+
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/forum-app-api-gateway:latest .
+
+      - name: Build Docker Image
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push Docker Image to Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/forum-app-api-gateway
