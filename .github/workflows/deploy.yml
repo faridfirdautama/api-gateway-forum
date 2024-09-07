@@ -44,7 +44,7 @@ jobs:
 
       - name: Deploy to Server
         run: |
-          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.API_GATEWAY_IP }} 'cd app/api-gateway-forum && docker-compose down'
+          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.API_GATEWAY_IP }} 'cd app/api-gateway-forum'
           docker pull ${secrets.DOCKERHUB_USERNAME}/forum-app-api-gateway
           docker stop forum-app-api-gateway
           docker rm forum-app-api-gateway
