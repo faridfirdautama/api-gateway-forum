@@ -48,5 +48,6 @@ jobs:
           docker pull ${secrets.DOCKERHUB_USERNAME}/forum-app-api-gateway
           docker stop forum-app-api-gateway
           docker rm forum-app-api-gateway
-          cd app/api-gateway-forum/ && docker-compose up -d
+          cd app/api-gateway-forum/
+          docker-compose up -d
           "
