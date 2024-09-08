@@ -47,6 +47,7 @@ jobs:
           ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.API_GATEWAY_IP }} << 'EOF'
           cd app/api-gateway-forum && \
           docker pull faridfirdautama/forum-app-api-gateway && \
+          docker build -t faridfirdautama/forum-app-api-gateway:latest . && \
           docker stop forum-app-api-gateway && \
           docker rm forum-app-api-gateway && \
           docker run -d --name forum-app-api-gateway -p 3000:3000 faridfirdautama/forum-app-api-gateway && \
