@@ -49,5 +49,6 @@ jobs:
           docker pull faridfirdautama/forum-app-api-gateway && \
           docker stop forum-app-api-gateway && \
           docker rm forum-app-api-gateway && \
+          docker run -d --name forum-app-api-gateway -p 3000:3000 faridfirdautama/forum-app-api-gateway && \
           docker-compose up -d
           EOF
