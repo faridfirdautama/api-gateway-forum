@@ -24,13 +24,13 @@ jobs:
         run: pnpm lint:run
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/forum-app-api-gateway:latest .
+        run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/forum-app-api-gateway:latest .
 
       - name: Build Docker Image
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: docker login -u ${{ vars.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push Docker Image to Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/forum-app-api-gateway
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/forum-app-api-gateway
 
       - name: Setup SSH to Server
         run: |
@@ -46,7 +46,7 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.API_GATEWAY_IP }} << 'EOF'
           cd app/api-gateway-forum && \
-          docker pull ${secrets.DOCKERHUB_USERNAME}/forum-app-api-gateway && \
+          docker pull faridfirdautama/forum-app-api-gateway && \
           docker stop forum-app-api-gateway && \
           docker rm forum-app-api-gateway && \
           docker-compose up -d
