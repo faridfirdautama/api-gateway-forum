@@ -1,0 +1,52 @@
+name: CI/CD Pipeline Backend Api-gateway ForumApp
+
+on:
+  push:
+    branches:
+      - feat/cicd
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Logging
+        run: echo "Start CI/CD Pipeline Backend Api-gateway ForumApp"
+
+      - name: Checkout Main branch
+        uses: actions/checkout@v3
+
+      - name: Setup Nodejs
+        run: |
+          npm install -g pnpm@latest
+          pnpm install
+
+      - name: Check code linting
+        run: pnpm lint:run
+
+      - name: Build Docker Image
+        run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/forum-app-api-gateway:latest .
+
+      - name: Build Docker Image
+        run: docker login -u ${{ vars.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push Docker Image to Hub
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/forum-app-api-gateway
+
+      - name: Setup SSH to Server
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.API_GATEWAY_IP }} >> ~/.ssh/known_hosts
+
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+
+      - name: Deploy to Server
+        run: |
+          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.API_GATEWAY_IP }} << 'EOF'
+          cd app/api-gateway-forum && \
+          docker pull faridfirdautama/forum-app-api-gateway && \
+          docker build -t faridfirdautama/forum-app-api-gateway:latest . && \
+          docker-compose up -d
+          EOF
