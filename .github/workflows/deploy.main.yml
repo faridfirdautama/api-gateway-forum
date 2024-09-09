@@ -3,7 +3,7 @@ name: CI/CD Pipeline Backend Api-gateway ForumApp
 on:
   push:
     branches:
-      - feat/cicd
+      - main
 
 jobs:
   build:
