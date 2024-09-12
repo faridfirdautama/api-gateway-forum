@@ -10,7 +10,7 @@ app.use(cors());
 app.use(
   "/api/v1/users/auth",
   createProxyMiddleware({
-    target: `http://${env.HOST_USERS_SERVICE}:3001/api/v1/users/auth`,
+    target: `http://${env.HOST_USERS_SERVICE}/api/v1/users/auth`,
     logger: console,
   }),
 );
@@ -18,7 +18,7 @@ app.use(
 app.use(
   "/api/v1/users",
   createProxyMiddleware({
-    target: `http://${env.HOST_USERS_SERVICE}:3001/api/v1/users`,
+    target: `http://${env.HOST_USERS_SERVICE}/api/v1/users`,
     logger: console,
   }),
 );
@@ -27,7 +27,7 @@ app.use(
   "/api/v1/threads",
   checkAuth,
   createProxyMiddleware({
-    target: `http://${env.HOST_THREADS_SERVICE}:8003/api/v1/threads`,
+    target: `http://${env.HOST_THREADS_SERVICE}/api/v1/threads`,
     logger: console,
   }),
 );
@@ -36,7 +36,7 @@ app.use(
   "/api/v1/replies",
   checkAuth,
   createProxyMiddleware({
-    target: `http://${env.HOST_REPLIES_SERVICE}:8004/api/v1/replies`,
+    target: `http://${env.HOST_REPLIES_SERVICE}/api/v1/replies`,
     logger: console,
   }),
 );
@@ -44,7 +44,7 @@ app.use(
 app.use(
   "/api/v1/notifications",
   createProxyMiddleware({
-    target: `"http://${env.HOST_NOTIFICATIONS_SERVICE}:8005/api/v1/notifications"`,
+    target: `"http://${env.HOST_NOTIFICATIONS_SERVICE}/api/v1/notifications"`,
     logger: console,
   }),
 );

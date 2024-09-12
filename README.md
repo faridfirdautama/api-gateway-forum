@@ -16,13 +16,13 @@ Target:
    ```
 2. Threads service:
    ```
-   <TBA>:8003/api/v1/threads
+   202.10.42.32:8003/api/v1/threads
    ```
 3. Replies service:
    ```
-   <TBA>:3003/api/v1/replies
+   202.10.42.32:8004/api/v1/replies
    ```
 4. Notifications service:
    ```
-   <TBA>:8003/api/v1/notifications
+   202.10.42.32:8005/api/v1/notifications
    ```
